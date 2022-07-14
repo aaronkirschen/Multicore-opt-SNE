@@ -57,7 +57,7 @@ if args.n_obs != -1 and args.n_obs <= len(data):
     data = data[:args.n_obs]
     classes = classes[:args.n_obs]
 
-print("Available CPU cores detected: " + str(multiprocessing.cpu_count()))
+print(("Available CPU cores detected: " + str(multiprocessing.cpu_count())))
 
 tsne = TSNE(n_jobs=int(args.n_threads), verbose=3, random_state=2, auto_iter=True, learning_rate=len(data)/12, auto_iter_end=1000)
 tsne_result = tsne.fit_transform(data)

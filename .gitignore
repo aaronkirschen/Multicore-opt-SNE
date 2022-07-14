@@ -2,3 +2,8 @@
 
 # cmake directories
 multicore_tsne/*/*
+
+MulticoreTSNE.egg-info/
+MulticoreTSNE/__pycache__/
+build/
+tsne_test.png

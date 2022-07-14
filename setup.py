@@ -52,7 +52,7 @@ class CMakeBuild(build_ext):
                          # set Debug and Release paths to the output directory on Windows
                          "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG='{}'".format(EXT_DIR),
                          "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE='{}'".format(EXT_DIR),
-                         self.cmake_args or "--",
+                         self.cmake_args or "-S",
                          SOURCE_DIR], cwd=BUILD_TEMP):
             sys.exit('\nERROR: Cannot generate Makefile. See above errors.')
 
