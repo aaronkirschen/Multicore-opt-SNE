@@ -2,6 +2,7 @@ import sys
 import shutil
 import os
 from os import path
+import subprocess
 from subprocess import call as execute
 
 from setuptools.command.build_ext import build_ext
@@ -29,6 +30,12 @@ class CMakeBuild(build_ext):
         self.cmake_args = None
         build_ext.initialize_options(self)
 
+    def get_cmake_version(self):
+        output = subprocess.check_output(["cmake", "--version"]).decode("utf-8")
+        line = output.splitlines()[0]
+        version = line.split()[2]
+        return version
+
     def run(self):
         if 0 != os.system('cmake --version'):
             sys.exit('\nError: Cannot find cmake. Install cmake, e.g. `pip install cmake`.')
@@ -36,12 +43,19 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
+        from packaging import version
+
         SOURCE_DIR = ext.sourcedir
         EXT_DIR = path.abspath(path.dirname(self.get_ext_fullpath(ext.name)))
         BUILD_TEMP = self.build_temp
 
         shutil.rmtree(BUILD_TEMP, ignore_errors=True)
         os.makedirs(BUILD_TEMP)
+
+        if version.parse(self.get_cmake_version()) < version.parse("3.22.0"):
+            cmake_passthru_flag = "--"
+        else:
+            cmake_passthru_flag = "-S"
 
         # Run cmake
         build_type = 'Debug' if self.debug else 'Release'
@@ -52,7 +66,7 @@ class CMakeBuild(build_ext):
                          # set Debug and Release paths to the output directory on Windows
                          "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG='{}'".format(EXT_DIR),
                          "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE='{}'".format(EXT_DIR),
-                         self.cmake_args or "-S",
+                         self.cmake_args or cmake_passthru_flag,
                          SOURCE_DIR], cwd=BUILD_TEMP):
             sys.exit('\nERROR: Cannot generate Makefile. See above errors.')
 
@@ -82,6 +96,7 @@ if __name__ == '__main__':
             'numpy',
             'cffi'
         ],
+        setup_requires=['packaging'],
         packages=find_packages(),
         include_package_data=True,
 
