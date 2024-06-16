@@ -17,35 +17,35 @@ def parse_csv(filepath):
     mat = np.loadtxt(filepath, delimiter=',', skiprows=1)
     return mat
 
+
 def plot(mat, colors):
-    # labels = set(colors)
-    colorsmat = colors.reshape((len(colors), -1)) # turns array into column
-    matwithcolors = np.hstack((mat, colorsmat)) # append columnf
+    colorsmat = colors.reshape((len(colors), -1))  # turns array into column
+    matwithcolors = np.hstack((mat, colorsmat))  # append column
     returns = []
-    cmap = cm.get_cmap('gist_ncar')
+    cmap = plt.get_cmap('gist_ncar')
     uniques = np.unique(colors)
     index = 0
     for n in uniques:
-        subset = matwithcolors[matwithcolors[:,2] == n] # rows where file index equals N
-        cindex = float(index)/float(len(uniques))
-        color = cmap( cindex )
-        returns.append(plt.scatter(subset[:,0], subset[:,1], c=color, s=1))
-        index+=1
+        subset = matwithcolors[matwithcolors[:, 2] == n]  # rows where file index equals N
+        cindex = float(index) / float(len(uniques))
+        color = cmap(cindex)
+        returns.append(plt.scatter(subset[:, 0], subset[:, 1], color=[color], s=1))
+        index += 1
 
     filename = "tsne_test.png"
 
     lgnd = plt.legend(returns,
-           np.unique(colors),
-           scatterpoints=1,
-           bbox_to_anchor=(1,1),
-           ncol=1,
-           fontsize=8)
-    for x in lgnd.legendHandles:
+                      np.unique(colors),
+                      scatterpoints=1,
+                      bbox_to_anchor=(1, 1),
+                      ncol=1,
+                      fontsize=8)
+    for x in lgnd.legend_handles:
         x._sizes = [30]
-
 
     plt.savefig(filename)
     print("Example plot saved as tsne_test.png")
+
 
 
 ################################################################
@@ -63,3 +63,5 @@ tsne = TSNE(n_jobs=int(args.n_threads), verbose=3, random_state=2, auto_iter=Tru
 tsne_result = tsne.fit_transform(data)
 
 plot(tsne_result, classes)
+
+#%%
