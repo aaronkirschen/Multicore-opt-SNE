@@ -1,4 +1,10 @@
 # opt-SNE
+
+Fixes in this fork:
+  * Merged linux and python3 fixes from other forks
+  * Corrected the test function to work with current matplotlib
+
+
 opt-SNE is a modified version of t-SNE that enables high-quality embeddings in the optimal amount of compute time without having to empirically tune algorithm parameters. For thorough background and discussion on this work, please read [the paper](https://doi.org/10.1101/451690).
 
 This repository contains a C++ implementation with a Python wrapper.
