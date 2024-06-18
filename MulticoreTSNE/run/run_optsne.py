@@ -18,13 +18,17 @@ parser.add_argument("--n_iter_early_exag", help='Number of iterations out of tot
 parser.add_argument("--n_iter", help='Total number of iterations', default=1000, type=int)
 parser.add_argument("--perp", help='Perplexity', default=30.0, type=float)
 parser.add_argument("--theta", help='Theta', default=0.5, type=float)
-parser.add_argument("--optsne", help='Whether or not to use opt-SNE mode (no argument, just flag)', default=False, action='store_true')
+parser.add_argument("--optsne", help='Whether or not to use opt-SNE mode (no argument, just flag)', action='store_true')
 parser.add_argument("--optsne_end", help='Constant used to stop run when (KLDn-1 - KLDn) < KLDn/X where X is this arg', default=5000, type=float)
 parser.add_argument("--early_exaggeration", help='Early exaggeration factor', default=12, type=float)
 parser.add_argument("--n_obs", help='How many observations (datapoints) to use', default=-1, type=int)
 parser.add_argument("--seed", help='Random seed for t-SNE', default=42, type=int)
 parser.add_argument("--verbose", help='Print progress every N iterations', default=25, type=int)
 parser.add_argument("--outfile", help='Relative or absolute filepath at which to save results CSV', default=default_result_path)
+parser.add_argument("--optimize_perplexity", help='Optimize perplexity', action='store_true')
+parser.add_argument("--min_perplexity", help='Minimum perplexity for optimization', default=5.0, type=float)
+parser.add_argument("--max_perplexity", help='Maximum perplexity for optimization', default=50.0, type=float)
+parser.add_argument("--step", help='Step size for perplexity optimization', default=5.0, type=float)
 args = parser.parse_args()
 
 def parse_csv(filepath):
@@ -44,11 +48,11 @@ if args.learning_rate == -1:
     if not args.optsne:
         args.learning_rate = 200
     else:
-        args.learning_rate = len(data)/args.early_exaggeration
+        args.learning_rate = len(data) / args.early_exaggeration
 
 tsne = TSNE(n_jobs=int(args.n_threads),
             learning_rate=args.learning_rate,
-            n_components = args.n_components,
+            n_components=args.n_components,
             n_iter=args.n_iter,
             n_iter_early_exag=args.n_iter_early_exag,
             perplexity=args.perp,
@@ -58,7 +62,10 @@ tsne = TSNE(n_jobs=int(args.n_threads),
             early_exaggeration=args.early_exaggeration,
             random_state=args.seed,
             verbose=args.verbose,
-            )
+            optimize_perplexity=args.optimize_perplexity,
+            min_perplexity=args.min_perplexity,
+            max_perplexity=args.max_perplexity,
+            step=args.step)
 
 if args.verbose:
     print("Available CPU cores detected: {}".format(str(multiprocessing.cpu_count())))
