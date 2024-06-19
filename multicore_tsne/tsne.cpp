@@ -752,14 +752,14 @@ extern "C"
     #ifdef _WIN32
     __declspec(dllexport)
     #endif
-    void tsne_run_double(double* X, int N, int D, double* Y,
-                         int no_dims, double perplexity, double theta,
-                         int num_threads, int max_iter, int n_iter_early_exag,
-                         int random_state, bool init_from_Y, int verbose,
-                         double early_exaggeration, double learning_rate,
-                         double *final_error, int distance, bool auto_iter, double auto_iter_end,
-                         bool optimize_perplexity, double min_perplexity, double max_perplexity, double step,
-                         double *optimized_perplexity)
+    extern void tsne_run_double(double* X, int N, int D, double* Y,
+                                int no_dims = 2, double perplexity = 30, double theta = .5,
+                                int num_threads = 1, int max_iter = 1000, int n_iter_early_exag = 250,
+                                int random_state = -1, bool init_from_Y = false, int verbose = 0,
+                                double early_exaggeration = 12, double learning_rate = 200,
+                                double *final_error = NULL, int distance = 1, bool auto_iter = false, double auto_iter_end = 0.02,
+                                bool optimize_perplexity = false, double min_perplexity = 5, double max_perplexity = 50, double step = 5,
+                                double *optimized_perplexity = NULL)
     {
         if (verbose)
             fprintf(stderr, "Performing t-SNE using %d cores.\n", NUM_THREADS(num_threads));
